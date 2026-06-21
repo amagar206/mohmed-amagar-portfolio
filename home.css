@@ -1,0 +1,118 @@
+/* ========================================
+   HOME.CSS - Home Page Styles
+   ======================================== */
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+}
+
+h1 {
+    font-size: 4rem;
+    margin: 2rem 0 1rem 0;
+    background: linear-gradient(45deg, #fff, var(--primary-glow), var(--secondary-glow));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
+    animation: titleGlow 3s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+    0%, 100% { text-shadow: 0 0 20px rgba(0, 243, 255, 0.3); }
+    50% { text-shadow: 0 0 40px rgba(0, 243, 255, 0.6); }
+}
+
+h1 + p {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--primary-glow);
+    margin-bottom: 2rem;
+}
+
+main > p {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+    line-height: 1.8;
+    transition: all 0.3s;
+}
+
+main > p:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+    border-color: var(--primary-glow);
+}
+
+main > p br {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* Competencies text styling */
+main > p:first-of-type {
+    margin-top: 2rem;
+}
+
+main > p:last-of-type {
+    margin-bottom: 2rem;
+}
+
+/* Numbered list styling */
+main > p:last-of-type {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
+    border-left: 4px solid var(--primary-glow);
+}
+
+/* Image styling */
+img[src="unnamed.jpg"] {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    margin: 2rem 0;
+    display: block;
+    border: 2px solid var(--primary-glow);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+    transition: all 0.5s;
+}
+
+img[src="unnamed.jpg"]:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 50px rgba(0, 243, 255, 0.5);
+}
+
+/* Bold text styling */
+strong {
+    color: var(--primary-glow);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h1 + p {
+        font-size: 1.2rem;
+    }
+    
+    main > p {
+        padding: 1.5rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+}

@@ -1,0 +1,97 @@
+/* ========================================
+   ABOUT.CSS - About Page Styles
+   ======================================== */
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    text-align: center;
+    font-size: 3rem;
+    margin: 3rem 0 2rem 0;
+    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.about-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.about-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    padding: 3rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    transition: all 0.5s;
+    animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+.about-card:hover {
+    transform: translateY(-10px) rotateX(5deg);
+    box-shadow: 0 30px 60px rgba(0, 243, 255, 0.2);
+    border-color: var(--primary-glow);
+}
+
+.about-card h2 {
+    font-size: 2rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.about-card p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #e0e0e0;
+    text-align: justify;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    h2 {
+        font-size: 2rem;
+        margin: 2rem 0 1rem 0;
+    }
+    
+    .about-container {
+        padding: 1rem;
+    }
+    
+    .about-card {
+        padding: 1.5rem;
+    }
+    
+    .about-card p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.8rem;
+    }
+    
+    .about-card {
+        padding: 1.2rem;
+    }
+}

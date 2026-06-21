@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Viewer - AMAGAR MOHMED</title>
+    <link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+    <div class="viewer-container">
+        <!-- Close button -->
+        <button class="close-viewer" onclick="closeViewer()">✕ Close</button>
+        
+        <!-- Main image container -->
+        <div class="image-wrapper">
+            <img id="viewer-image" src="" alt="Full Screen View">
+        </div>
+        
+        <!-- Information message -->
+        <div class="viewer-message">
+            <div class="message-icon">💡</div>
+            <div class="message-text">
+                <h3>Full Screen Mode Available</h3>
+                <p>Click on the image to enter <strong>Full Screen</strong> mode for the best viewing experience</p>
+                <div class="message-tips">
+                    <span>🖱️ Click image = Full Screen</span>
+                    <span>⌨️ Press ESC = Exit Full Screen</span>
+                    <span>❌ Click Close = Return to Projects</span>
+                    <span>📥 Click Download = Save Image</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation buttons -->
+        <div class="nav-buttons">
+            <button class="nav-btn prev-btn" onclick="previousImage()">
+                ◀ Previous
+            </button>
+            <button class="nav-btn next-btn" onclick="nextImage()">
+                Next ▶
+            </button>
+        </div>
+        
+        <!-- Image counter -->
+        <div class="image-counter">
+            <span id="current-index">1</span> / <span id="total-images">1</span>
+        </div>
+        
+        <!-- Download button -->
+        <button class="download-btn" onclick="downloadImage()">
+            📥 Download Image
+        </button>
+    </div>
+
+    <script src="viewer.js"></script>
+</body>
+</html>
