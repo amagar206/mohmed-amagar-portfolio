@@ -308,3 +308,35 @@ document.querySelector('body').addEventListener('mouseleave', () => {
         card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
     });
 });
+// ========================================
+// SPLASH SCREEN – 4D ENTRY BUTTON (FIXED)
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded – looking for splash screen...'); // DEBUG
+
+    const splash = document.getElementById('splash-screen');
+    const enterBtn = document.getElementById('enter-btn');
+
+    console.log('Splash element:', splash); // DEBUG
+    console.log('Enter button:', enterBtn); // DEBUG
+
+    if (splash && enterBtn) {
+        // Click to dismiss the splash screen
+        enterBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Button clicked! Hiding splash...'); // DEBUG
+
+            // Add hidden class to fade out
+            splash.classList.add('hidden');
+
+            // After transition, remove from DOM entirely
+            setTimeout(() => {
+                splash.style.display = 'none';
+                console.log('Splash removed from DOM'); // DEBUG
+            }, 1000); // matches CSS transition duration (1s)
+        });
+    } else {
+        console.error('Splash screen or button not found!'); // DEBUG
+    }
+});
