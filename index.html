@@ -75,6 +75,23 @@ In the rapidly evolving tech scene of Morocco—especially with the Souss-Massa 
          <footer>
         <p>&copy; 2026 AMAGAR MOHMED. All rights reserved.</p>
     </footer>
+        <script>
+            document.addEventListener('DOMContentLoaded' , function(){
+                const splash = document.addElementById('spash-screen');
+                const enterBtn = document.addElementById('enter-btn');
+            if (splash && enterBtn) {
+                // On click, hide splash screen
+                enterBtn.addEventListener(click , function(e){
+                    e.preventDefault(); 
+                    splash.classList.add('hidden');
+                    // Optionally remove splash from DOM after transition
+                    setTimeout(() => {
+                      splash.style.display = 'none';
+                      }, 1000); // matches CSS transition duration
+                });
+            }    
+            });
+        </script>
 
     <script src="script.js"></script>
 
