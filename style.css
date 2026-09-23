@@ -12,13 +12,13 @@ html {
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    /* UPDATED: Deeper, richer background gradient for better contrast */
-    background-color: var(--bg-color);
-    background-image: radial-gradient(circle at top center, #111122 0%, #ffffff 100%);
+    background-color: #070714;
+    background-image: radial-gradient(ellipse at top, #111126 0%, #050510 100%);
     color: var(--text-light);
     overflow-x: hidden;
-    perspective: 1000px; 
-    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
 }
 
 /* Metaverse Variables */
@@ -34,25 +34,26 @@ body {
 
 /* Header & Navigation */
 header {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px); /* Increased blur */
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--glass-border);
-    /* UPDATED: Added a strong shadow to separate the header from the page */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    transform: translateZ(50px);
+    position: fixed;
+    top: 15px; /* Margin from top */
+    left: 50%;
+    transform: translateX(-50%); /* Centered cleanly in 2D space */
+    width: calc(100% - 2rem);
+    max-width: 1200px;
+    z-index: 1000;
+    background: rgba(10, 10, 20, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
-
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 0.8rem 1.8rem;
+    width: 100%;
 }
 
 .logo-container {
@@ -94,9 +95,8 @@ nav {
 .nav-links a:hover {
     color: var(--primary-color);
     text-shadow: 0 0 15px var(--primary-color);
-    transform: translateZ(10px);
+    transform: none; /* Avoid triggering layer redraws */
 }
-
 .burger {
     display: none;
     font-size: 1.5rem;
