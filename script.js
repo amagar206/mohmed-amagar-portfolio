@@ -1,299 +1,74 @@
-// ========================================
-// SCRIPT.JS – Splash + All Interactivity
-// ========================================
+/* ========================================
+   SCRIPT.JS - High-Performance Interaction
+   ======================================== */
 
-// ----- SPLASH SCREEN (index.html only) -----
-document.addEventListener('DOMContentLoaded', function() {
-    const splash = document.getElementById('splash-screen');
-    const enterBtn = document.getElementById('enter-btn');
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Mobile Menu Navigation Toggle
+    const burger = document.getElementById('burger-menu');
+    const navLinks = document.getElementById('nav-links');
 
-    if (splash && enterBtn) {
-        // This page is index.html – splash is visible
-        enterBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Splash button clicked – redirecting to home.html');
-
-            // Add fade-out effect before redirect
-            splash.style.transition = 'opacity 0.8s ease';
-            splash.style.opacity = '0';
-
-            // Redirect to home.html after fade
-            setTimeout(() => {
-                window.location.href = 'home.html';
-            }, 800);
+    if (burger && navLinks) {
+        burger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            burger.classList.toggle('toggle');
         });
-    } else {
-        // We are NOT on index.html – handle other pages normally
-        console.log('Not on splash page – loading main features...');
-        initMainFeatures();
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!burger.contains(e.target) && !navLinks.contains(e.target) && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                burger.classList.remove('toggle');
+            }
+        });
+    }
+
+    // 2. High-Performance 60/120fps Mouse Tracking
+    const homeImage = document.querySelector('.home-image');
+
+    if (homeImage) {
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        let isTicking = false;
+
+        window.addEventListener('mousemove', (e) => {
+            // Normalize values from -1 to 1
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+            if (!isTicking) {
+                window.requestAnimationFrame(updateCardPosition);
+                isTicking = true;
+            }
+        }, { passive: true });
+
+        function updateCardPosition() {
+            // Smooth lerp interpolation for silky motion
+            targetX += (mouseX - targetX) * 0.1;
+            targetY += (mouseY - targetY) * 0.1;
+
+            const rotateX = -targetY * 8; // Max 8-degree tilt
+            const rotateY = targetX * 8;
+
+            homeImage.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+            // Continue animation until motion rests
+            if (Math.abs(mouseX - targetX) > 0.001 || Math.abs(mouseY - targetY) > 0.001) {
+                window.requestAnimationFrame(updateCardPosition);
+            } else {
+                isTicking = false;
+            }
+        }
+
+        // Reset image angle on mouse exit
+        window.addEventListener('mouseleave', () => {
+            mouseX = 0;
+            mouseY = 0;
+            if (!isTicking) {
+                window.requestAnimationFrame(updateCardPosition);
+                isTicking = true;
+            }
+        });
     }
 });
-
-// ----- MAIN FEATURES (all pages except index.html) -----
-function initMainFeatures() {
-    // Burger Menu
-    const burger = document.querySelector('.burger');
-    const navLinks = document.querySelector('.nav-links');
-    if (burger && navLinks) {
-        burger.addEventListener('click', () => navLinks.classList.toggle('active'));
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => navLinks.classList.remove('active'));
-        });
-    }
-
-    // Active link highlighting
-    const currentPage = window.location.pathname.split('/').pop() || 'home.html';
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        if (link.getAttribute('href') === currentPage) {
-            link.classList.add('active');
-        }
-    });
-
-    // Contact form
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you for your message! I will get back to you soon.');
-            contactForm.reset();
-        });
-    }
-
-    // Image viewer (projects page)
-    const allImages = document.querySelectorAll('.img-container img');
-    allImages.forEach(img => {
-        if (img.src && img.src !== '') {
-            img.style.cursor = 'pointer';
-            img.title = 'Click to view full size in new window';
-            img.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                // Open image in new window (same as before)
-                const newWindow = window.open();
-                newWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head><title>${this.alt || 'Image Viewer'}</title>
-                    <meta charset="UTF-8">
-                    <style>
-                        * { margin:0; padding:0; box-sizing:border-box; }
-                        body {
-                            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2f 50%, #16213e 100%);
-                            min-height: 100vh;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            position: relative;
-                            overflow: hidden;
-                        }
-                        body::before {
-                            content: '';
-                            position: fixed;
-                            top: 0; left: 0; width: 100%; height: 100%;
-                            background-image: radial-gradient(circle at 20% 30%, rgba(0,243,255,0.15) 0%, transparent 30%),
-                                              radial-gradient(circle at 80% 70%, rgba(255,0,230,0.15) 0%, transparent 35%);
-                            pointer-events: none;
-                            animation: particleFloat 20s ease-in-out infinite alternate;
-                        }
-                        @keyframes particleFloat {
-                            0% { transform: scale(1); opacity:0.5; }
-                            100% { transform: scale(1.1); opacity:1; }
-                        }
-                        .image-container {
-                            max-width: 90vw;
-                            max-height: 90vh;
-                            text-align: center;
-                            animation: fadeIn 0.5s ease-out;
-                            position: relative;
-                            z-index: 10;
-                        }
-                        @keyframes fadeIn {
-                            from { opacity:0; transform:scale(0.95); }
-                            to { opacity:1; transform:scale(1); }
-                        }
-                        .image-container img {
-                            max-width: 90vw;
-                            max-height: 80vh;
-                            object-fit: contain;
-                            border-radius: 20px;
-                            border: 3px solid #00f3ff;
-                            box-shadow: 0 0 50px rgba(0,243,255,0.5);
-                            transition: all 0.3s;
-                            cursor: pointer;
-                        }
-                        .image-container img:hover {
-                            transform: scale(1.02);
-                            box-shadow: 0 0 80px rgba(0,243,255,0.8);
-                        }
-                        .info-panel {
-                            position: fixed;
-                            bottom: 20px;
-                            left: 50%;
-                            transform: translateX(-50%);
-                            background: rgba(0,0,0,0.8);
-                            backdrop-filter: blur(10px);
-                            padding: 15px 25px;
-                            border-radius: 50px;
-                            border: 1px solid rgba(0,243,255,0.3);
-                            text-align: center;
-                            z-index: 20;
-                            animation: slideUp 0.6s ease-out;
-                        }
-                        @keyframes slideUp {
-                            from { opacity:0; transform: translateX(-50%) translateY(30px); }
-                            to { opacity:1; transform: translateX(-50%) translateY(0); }
-                        }
-                        .info-panel p { color: #00f3ff; margin: 5px 0; font-size: 14px; }
-                        .info-panel .title { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
-                        .info-panel .instruction { color: #ff00e6; font-size: 12px; }
-                        .close-btn {
-                            position: fixed;
-                            top: 20px; right: 20px;
-                            background: linear-gradient(135deg, rgba(255,0,230,0.2), rgba(0,243,255,0.2));
-                            backdrop-filter: blur(10px);
-                            border: 1px solid #00f3ff;
-                            color: #fff;
-                            padding: 10px 20px;
-                            border-radius: 30px;
-                            cursor: pointer;
-                            transition: all 0.3s;
-                            font-size: 14px;
-                            font-weight: bold;
-                            z-index: 20;
-                        }
-                        .close-btn:hover {
-                            background: linear-gradient(135deg, #ff00e6, #00f3ff);
-                            color: #000;
-                            transform: translateY(-2px);
-                            box-shadow: 0 0 20px rgba(0,243,255,0.5);
-                        }
-                        .download-btn {
-                            position: fixed;
-                            bottom: 20px; left: 20px;
-                            background: rgba(0,243,255,0.2);
-                            backdrop-filter: blur(10px);
-                            border: 1px solid #00f3ff;
-                            color: #00f3ff;
-                            padding: 10px 20px;
-                            border-radius: 30px;
-                            cursor: pointer;
-                            transition: all 0.3s;
-                            font-size: 14px;
-                            font-weight: bold;
-                            z-index: 20;
-                        }
-                        .download-btn:hover {
-                            background: #00f3ff;
-                            color: #000;
-                            transform: translateY(-2px);
-                            box-shadow: 0 0 20px rgba(0,243,255,0.5);
-                        }
-                        @media (max-width: 768px) {
-                            .info-panel { padding: 10px 15px; }
-                            .info-panel p { font-size: 10px; }
-                            .info-panel .title { font-size: 12px; }
-                            .close-btn, .download-btn { padding: 6px 12px; font-size: 10px; }
-                        }
-                    </style>
-                    </head>
-                    <body>
-                        <button class="close-btn" onclick="window.close()">✕ Close Window</button>
-                        <button class="download-btn" onclick="downloadImage()">📥 Download Image</button>
-                        <div class="image-container">
-                            <img src="${this.src}" alt="${this.alt}" id="mainImage" onclick="toggleFullscreen(this)">
-                        </div>
-                        <div class="info-panel">
-                            <p class="title">💡 ${this.alt || 'Image Preview'}</p>
-                            <p>🖱️ Click on image = Full Screen Mode</p>
-                            <p class="instruction">⌨️ Press ESC to exit full screen | Click Close to return</p>
-                        </div>
-                        <script>
-                            function toggleFullscreen(element) {
-                                if (!document.fullscreenElement) {
-                                    element.requestFullscreen().catch(err => {});
-                                } else {
-                                    document.exitFullscreen();
-                                }
-                            }
-                            function downloadImage() {
-                                const link = document.createElement('a');
-                                link.href = '${this.src}';
-                                link.download = '${this.alt || 'image'}'.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.jpg';
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
-                                const notif = document.createElement('div');
-                                notif.textContent = '✓ Image downloaded!';
-                                notif.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#00f3ff;color:#000;padding:8px 16px;border-radius:20px;z-index:1000;animation:fadeOut 2s';
-                                document.body.appendChild(notif);
-                                setTimeout(() => notif.remove(), 2000);
-                            }
-                            document.addEventListener('keydown', function(e) {
-                                if (e.key === 'Escape' && document.fullscreenElement) {
-                                    document.exitFullscreen();
-                                }
-                            });
-                        </script>
-                    </body>
-                    </html>
-                `);
-                newWindow.document.close();
-            });
-            img.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.05)';
-                this.style.boxShadow = '0 0 30px rgba(0, 243, 255, 0.5)';
-            });
-            img.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-                this.style.boxShadow = '0 0 20px rgba(0, 243, 255, 0.3)';
-            });
-        }
-    });
-
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                e.preventDefault();
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    });
-
-    // Scroll animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.project-text-card, .about-card, .contact-wrapper, .core-competencies, .future-oriented')
-        .forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'all 0.6s ease-out';
-            observer.observe(el);
-        });
-
-    // 3D Parallax
-    document.addEventListener('mousemove', (e) => {
-        const cards = document.querySelectorAll('.project-text-card, .about-card, .core-competencies, .future-oriented');
-        const mouseX = e.clientX / window.innerWidth;
-        const mouseY = e.clientY / window.innerHeight;
-        cards.forEach(card => {
-            const rotateX = (mouseY - 0.5) * 5;
-            const rotateY = (mouseX - 0.5) * 5;
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
-        });
-    });
-    document.querySelector('body').addEventListener('mouseleave', () => {
-        document.querySelectorAll('.project-text-card, .about-card, .core-competencies, .future-oriented')
-            .forEach(card => {
-                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
-            });
-    });
-}
