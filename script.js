@@ -1,76 +1,86 @@
 /* ========================================================
-   SCRIPT.JS - High Performance 3D Tilt & Navigation
+   SCRIPT.JS - 4D Entry Button, Navigation & 3D Card Tilt
    ======================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Mobile Menu Drawer Toggle
+    // Mobile menu drawer toggle
     const burger = document.getElementById('burger-menu');
     const navLinks = document.getElementById('nav-links');
 
     if (burger && navLinks) {
         burger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            burger.classList.toggle('toggle');
+            const isOpen = navLinks.classList.toggle('active');
+            burger.classList.toggle('toggle', isOpen);
+            burger.setAttribute('aria-expanded', String(isOpen));
         });
 
-        document.addEventListener('click', (e) => {
-            if (!burger.contains(e.target) && !navLinks.contains(e.target) && navLinks.classList.contains('active')) {
+        document.addEventListener('click', (event) => {
+            if (!burger.contains(event.target) && !navLinks.contains(event.target)) {
                 navLinks.classList.remove('active');
                 burger.classList.remove('toggle');
+                burger.setAttribute('aria-expanded', 'false');
             }
         });
     }
 
-    // 2. High-Performance 60/120fps Smooth 3D Card Tilt
+    // 4D entry button: always take the visitor from the splash page to home.
+    const enterButton = document.getElementById('enter-btn');
+
+    if (enterButton) {
+        enterButton.addEventListener('click', () => {
+            if (enterButton.disabled) return;
+
+            enterButton.disabled = true;
+            enterButton.classList.add('is-entering');
+            document.body.classList.add('is-transitioning');
+
+            // Keep the short transition visible before navigating.
+            window.setTimeout(() => {
+                window.location.assign('home.html');
+            }, 450);
+        });
+    }
+
+    // Smooth 3D card tilt. Pointer events work for both mouse and touch devices.
     const card = document.getElementById('interactive-card');
 
-    if (card) {
-        let mouseX = 0;
-        let mouseY = 0;
+    if (card && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        let pointerX = 0;
+        let pointerY = 0;
         let currentX = 0;
         let currentY = 0;
-        let isMoving = false;
+        let animationFrame = null;
 
-        window.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const cardCenterX = rect.left + rect.width / 2;
-            const cardCenterY = rect.top + rect.height / 2;
+        const animateCard = () => {
+            currentX += (pointerX - currentX) * 0.1;
+            currentY += (pointerY - currentY) * 0.1;
 
-            // Normalized distance (-1 to 1) relative to screen center
-            mouseX = (e.clientX - cardCenterX) / (window.innerWidth / 2);
-            mouseY = (e.clientY - cardCenterY) / (window.innerHeight / 2);
+            card.style.transform = `rotateX(${(-currentY * 15).toFixed(2)}deg) rotateY(${(currentX * 15).toFixed(2)}deg)`;
 
-            if (!isMoving) {
-                window.requestAnimationFrame(animateCard);
-                isMoving = true;
+            if (Math.abs(pointerX - currentX) > 0.001 || Math.abs(pointerY - currentY) > 0.001) {
+                animationFrame = window.requestAnimationFrame(animateCard);
+            } else {
+                animationFrame = null;
             }
+        };
+
+        const requestAnimation = () => {
+            if (animationFrame === null) {
+                animationFrame = window.requestAnimationFrame(animateCard);
+            }
+        };
+
+        card.addEventListener('pointermove', (event) => {
+            const rect = card.getBoundingClientRect();
+            pointerX = Math.max(-1, Math.min(1, (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2)));
+            pointerY = Math.max(-1, Math.min(1, (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2)));
+            requestAnimation();
         }, { passive: true });
 
-        function animateCard() {
-            // Smooth lerp interpolation
-            currentX += (mouseX - currentX) * 0.1;
-            currentY += (mouseY - currentY) * 0.1;
-
-            const rotateX = -currentY * 15; // Max 15 degree pitch
-            const rotateY = currentX * 15;  // Max 15 degree yaw
-
-            card.style.transform = `rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
-
-            if (Math.abs(mouseX - currentX) > 0.001 || Math.abs(mouseY - currentY) > 0.001) {
-                window.requestAnimationFrame(animateCard);
-            } else {
-                isMoving = false;
-            }
-        }
-
-        // Return to flat position when cursor leaves window
-        window.addEventListener('mouseleave', () => {
-            mouseX = 0;
-            mouseY = 0;
-            if (!isMoving) {
-                window.requestAnimationFrame(animateCard);
-                isMoving = true;
-            }
+        card.addEventListener('pointerleave', () => {
+            pointerX = 0;
+            pointerY = 0;
+            requestAnimation();
         });
     }
 });
