@@ -1,9 +1,8 @@
 /* ========================================================
-   SCRIPT.JS - 4D Entry Button, Navigation & 3D Card Tilt
+   SCRIPT.JS - 4D Entry Button, Navigation, Card Tilt & Contact Form
    ======================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile menu drawer toggle
     const burger = document.getElementById('burger-menu');
     const navLinks = document.getElementById('nav-links');
 
@@ -23,25 +22,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4D entry button: always take the visitor from the splash page to home.
     const enterButton = document.getElementById('enter-btn');
 
     if (enterButton) {
         enterButton.addEventListener('click', () => {
             if (enterButton.disabled) return;
-
             enterButton.disabled = true;
             enterButton.classList.add('is-entering');
-            document.body.classList.add('is-transitioning');
-
-            // Keep the short transition visible before navigating.
-            window.setTimeout(() => {
-                window.location.assign('home.html');
-            }, 450);
+            window.setTimeout(() => window.location.assign('home.html'), 450);
         });
     }
 
-    // Smooth 3D card tilt. Pointer events work for both mouse and touch devices.
+    const contactForm = document.getElementById('contact-form');
+    const formStatus = document.getElementById('form-status');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', () => {
+            const submitButton = contactForm.querySelector('.submit-btn');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending…';
+            }
+            if (formStatus) formStatus.textContent = 'Sending your message…';
+        });
+
+        if (new URLSearchParams(window.location.search).get('sent') === '1' && formStatus) {
+            formStatus.textContent = 'Message sent successfully. Thank you!';
+        }
+    }
+
     const card = document.getElementById('interactive-card');
 
     if (card && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -54,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const animateCard = () => {
             currentX += (pointerX - currentX) * 0.1;
             currentY += (pointerY - currentY) * 0.1;
-
             card.style.transform = `rotateX(${(-currentY * 15).toFixed(2)}deg) rotateY(${(currentX * 15).toFixed(2)}deg)`;
 
             if (Math.abs(pointerX - currentX) > 0.001 || Math.abs(pointerY - currentY) > 0.001) {
@@ -65,9 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const requestAnimation = () => {
-            if (animationFrame === null) {
-                animationFrame = window.requestAnimationFrame(animateCard);
-            }
+            if (animationFrame === null) animationFrame = window.requestAnimationFrame(animateCard);
         };
 
         card.addEventListener('pointermove', (event) => {
