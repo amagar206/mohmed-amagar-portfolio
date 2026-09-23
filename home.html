@@ -6,11 +6,11 @@
     <title>Mohamed Amagar – Portfolio</title>
     <link rel="stylesheet" href="shared.css">
     <link rel="stylesheet" href="home.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Header Navigation -->
+    <!-- Floating Navigation Bar -->
     <header>
         <nav>
             <a href="home.html" class="logo-container">
@@ -32,13 +32,28 @@
         </nav>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main Home Section -->
     <main id="home">
-        <h1>Hi, I am MOHAMED AMAGAR</h1>
-        <p>Future-oriented network and systems specialist</p>
+        <h1 class="hero-title">HI, I am MOHAMED AMAGAR</h1>
+        <p class="hero-subtitle">Future-oriented network and systems specialist</p>
 
-        <div class="home-image-container">
-            <img src="portfolio.png" alt="Mohamed Amagar" class="home-image">
+        <!-- 3D Interactive Card -->
+        <div class="card-3d-wrapper">
+            <div class="card-3d" id="interactive-card">
+                <div class="card-badge">
+                    <img src="portfolio.png" alt="Portfolio Icon" class="card-icon">
+                </div>
+                <h3 class="card-title">Portfolio</h3>
+                <p class="card-desc">Interactive Metaverse Space</p>
+
+                <!-- 4D Enter Metaverse Button -->
+                <a href="index.html" class="metaverse-btn">
+                    <span class="btn-text">Enter the Metaverse</span>
+                    <span class="btn-glow"></span>
+                </a>
+                
+                <p class="metaverse-sub">⚡ Network & Systems Specialist</p>
+            </div>
         </div>
     </main>
 
