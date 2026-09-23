@@ -1,9 +1,9 @@
-/* ========================================
-   SCRIPT.JS - High-Performance Interaction
-   ======================================== */
+/* ========================================================
+   SCRIPT.JS - High Performance 3D Tilt & Navigation
+   ======================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Mobile Menu Navigation Toggle
+    // 1. Mobile Menu Drawer Toggle
     const burger = document.getElementById('burger-menu');
     const navLinks = document.getElementById('nav-links');
 
@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
             burger.classList.toggle('toggle');
         });
 
-        // Close menu when clicking outside
         document.addEventListener('click', (e) => {
             if (!burger.contains(e.target) && !navLinks.contains(e.target) && navLinks.classList.contains('active')) {
                 navLinks.classList.remove('active');
@@ -22,52 +21,55 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. High-Performance 60/120fps Mouse Tracking
-    const homeImage = document.querySelector('.home-image');
+    // 2. High-Performance 60/120fps Smooth 3D Card Tilt
+    const card = document.getElementById('interactive-card');
 
-    if (homeImage) {
+    if (card) {
         let mouseX = 0;
         let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-        let isTicking = false;
+        let currentX = 0;
+        let currentY = 0;
+        let isMoving = false;
 
         window.addEventListener('mousemove', (e) => {
-            // Normalize values from -1 to 1
-            mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-            mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            const rect = card.getBoundingClientRect();
+            const cardCenterX = rect.left + rect.width / 2;
+            const cardCenterY = rect.top + rect.height / 2;
 
-            if (!isTicking) {
-                window.requestAnimationFrame(updateCardPosition);
-                isTicking = true;
+            // Normalized distance (-1 to 1) relative to screen center
+            mouseX = (e.clientX - cardCenterX) / (window.innerWidth / 2);
+            mouseY = (e.clientY - cardCenterY) / (window.innerHeight / 2);
+
+            if (!isMoving) {
+                window.requestAnimationFrame(animateCard);
+                isMoving = true;
             }
         }, { passive: true });
 
-        function updateCardPosition() {
-            // Smooth lerp interpolation for silky motion
-            targetX += (mouseX - targetX) * 0.1;
-            targetY += (mouseY - targetY) * 0.1;
+        function animateCard() {
+            // Smooth lerp interpolation
+            currentX += (mouseX - currentX) * 0.1;
+            currentY += (mouseY - currentY) * 0.1;
 
-            const rotateX = -targetY * 8; // Max 8-degree tilt
-            const rotateY = targetX * 8;
+            const rotateX = -currentY * 15; // Max 15 degree pitch
+            const rotateY = currentX * 15;  // Max 15 degree yaw
 
-            homeImage.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            card.style.transform = `rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
 
-            // Continue animation until motion rests
-            if (Math.abs(mouseX - targetX) > 0.001 || Math.abs(mouseY - targetY) > 0.001) {
-                window.requestAnimationFrame(updateCardPosition);
+            if (Math.abs(mouseX - currentX) > 0.001 || Math.abs(mouseY - currentY) > 0.001) {
+                window.requestAnimationFrame(animateCard);
             } else {
-                isTicking = false;
+                isMoving = false;
             }
         }
 
-        // Reset image angle on mouse exit
+        // Return to flat position when cursor leaves window
         window.addEventListener('mouseleave', () => {
             mouseX = 0;
             mouseY = 0;
-            if (!isTicking) {
-                window.requestAnimationFrame(updateCardPosition);
-                isTicking = true;
+            if (!isMoving) {
+                window.requestAnimationFrame(animateCard);
+                isMoving = true;
             }
         });
     }
